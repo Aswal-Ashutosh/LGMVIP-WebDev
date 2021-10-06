@@ -4,9 +4,12 @@
     width: 30%;
     height: 35%;
     justify-content: center;
+    border-radius: 25px;
+    box-shadow: 2px 3px 8px rgb(189, 172, 172);
 }
 
 #AdminFormContainer h1{
+    color: rgb(120, 129, 118);
     margin-top: 5%;
 }
 

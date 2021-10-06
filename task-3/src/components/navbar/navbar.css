@@ -3,7 +3,12 @@
 }
 
 nav{
-    background-color: rgba(128, 175, 194, 0.432);
+    background-color: rgba(54, 169, 214, 0.795);
     text-align: center;
     padding: 1.5%;
+    box-shadow: 2px 3px 8px rgb(189, 172, 172);
+}
+
+nav h1{
+    color: white;
 }
