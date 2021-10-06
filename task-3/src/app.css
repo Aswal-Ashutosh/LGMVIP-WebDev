@@ -1,0 +1,11 @@
+#App {
+  margin: 0;
+  padding: 0;
+}
+
+#AppContent {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

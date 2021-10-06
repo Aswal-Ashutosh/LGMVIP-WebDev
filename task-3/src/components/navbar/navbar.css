@@ -1,0 +1,9 @@
+*{
+    margin: 0;
+}
+
+nav{
+    background-color: rgba(128, 175, 194, 0.432);
+    text-align: center;
+    padding: 1.5%;
+}
