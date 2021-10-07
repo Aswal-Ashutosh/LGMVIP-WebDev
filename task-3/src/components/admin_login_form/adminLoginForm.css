@@ -1,8 +1,8 @@
 #AdminFormContainer{
     background-color: rgba(128, 175, 194, 0.123);
     text-align: center;
-    width: 30%;
-    height: 35%;
+    width: 35%;
+    height: 50%;
     justify-content: center;
     border-radius: 25px;
     box-shadow: 2px 3px 8px rgb(189, 172, 172);
@@ -10,7 +10,8 @@
 
 #AdminFormContainer h1{
     color: rgb(120, 129, 118);
-    margin-top: 5%;
+    margin-top: 2.5%;
+    margin-bottom: 2.0%;
 }
 
 #AdminFormContainer .LoginForm{
@@ -31,7 +32,7 @@
 
 }
 
-#AdminFormContainer button{
+#AdminFormContainer .formBtn{
     width: 8vw;
     height: 5vh;
     border-radius: 5px;

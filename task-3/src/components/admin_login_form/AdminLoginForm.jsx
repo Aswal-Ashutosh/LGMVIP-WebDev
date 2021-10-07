@@ -1,8 +1,10 @@
 import React from "react";
 import "../admin_login_form/AdminLoginForm.css";
 import { firebaseAuth, signIn, signUp } from "../../services/firebase.js";
-import { LinearProgress } from "@material-ui/core";
-import { Box } from "@material-ui/core";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { loggedUser } from "../../services/loggedUser";
 
 class AdminLoginForm extends React.Component {
@@ -11,13 +13,17 @@ class AdminLoginForm extends React.Component {
     this.state = {
       emailInput: "",
       passwordInput: "",
+      collegeInput: "",
+      toggleButtonId: "sign_in",
       loading: false,
     };
 
     this.handleEmailInput = this.handleEmailInput.bind(this);
     this.handlePasswordInput = this.handlePasswordInput.bind(this);
+    this.handleCollegeInput = this.handleCollegeInput.bind(this);
     this.handleSingIn = this.handleSingIn.bind(this);
     this.handleSingUp = this.handleSingUp.bind(this);
+    this.handleToggleButtonChange = this.handleToggleButtonChange.bind(this);
   }
 
   handleEmailInput(event) {
@@ -26,6 +32,14 @@ class AdminLoginForm extends React.Component {
 
   handlePasswordInput(event) {
     this.setState({ passwordInput: event.target.value });
+  }
+
+  handleToggleButtonChange(event) {
+    this.setState({ toggleButtonId: event.target.value });
+  }
+
+  handleCollegeInput(event) {
+    this.setState({ collegeInput: event.target.value });
   }
 
   clearAlert() {
@@ -48,7 +62,7 @@ class AdminLoginForm extends React.Component {
       return true;
 
     if (this.state.emailInput.length === 0)
-      this.showAlert("Email can't be empty");
+      this.showAlert("Email can't be empty!");
     else if (this.state.passwordInput.length === 0)
       this.showAlert("Password can't be empty!");
 
@@ -127,11 +141,49 @@ class AdminLoginForm extends React.Component {
     }
   }
 
+  rederButton(id) {
+    switch (id) {
+      case "sign_in":
+        return (
+          <button className="formBtn" onClick={this.handleSingIn}>
+            Sign In
+          </button>
+        );
+      case "sign_up":
+        return (
+          <button className="formBtn" onClick={this.handleSingUp}>
+            Sign Up
+          </button>
+        );
+      default:
+        return (<button className="formBtn">Get Result</button>);
+    }
+  }
+
   render() {
     return (
       <div id="AdminFormContainer">
-        <h1>Admin Login</h1>
+        <h1>Welcome</h1>
+        <ToggleButtonGroup
+          color="primary"
+          value={this.state.toggleButtonId}
+          exclusive
+          onChange={this.handleToggleButtonChange}
+        >
+          <ToggleButton value="sign_in">Sign In</ToggleButton>
+          <ToggleButton value="sign_up">Sign Up</ToggleButton>
+          <ToggleButton value="students">Students</ToggleButton>
+        </ToggleButtonGroup>
         <div className="LoginForm">
+          {this.state.toggleButtonId === "sign_up" ? (
+            <input
+              id="collegeInput"
+              type="text"
+              value={this.state.collegeInput}
+              onChange={this.handleCollegeInput}
+              placeholder="College Name"
+            />
+          ) : null}
           <input
             id="emailInput"
             type="text"
@@ -146,8 +198,7 @@ class AdminLoginForm extends React.Component {
             onChange={this.handlePasswordInput}
             placeholder="Password"
           />
-          <button onClick={this.handleSingIn}>Sign In</button>
-          <button onClick={this.handleSingUp}>Sign Up</button>
+          {this.rederButton(this.state.toggleButtonId)}
         </div>
         {this.state.loading ? (
           <Box sx={{ marginTop: "2.5%" }}>
