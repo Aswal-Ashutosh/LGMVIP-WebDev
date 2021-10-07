@@ -1,16 +1,7 @@
-import AdminLoginForm from "./components/admin_login_form/AdminLoginForm";
-import Navbar from './components/navbar/Navbar'
-import './app.css';
+import HomePage from "./pages/HomePage";
 
-function App() {
-    return (
-        <div id='App'>
-            <Navbar/>
-            <div id='AppContent'>
-                <AdminLoginForm/>
-            </div>
-        </div>
-    );
+function App(){
+    return <HomePage/>;
 }
 
 export default App;

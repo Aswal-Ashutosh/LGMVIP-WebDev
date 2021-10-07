@@ -13,7 +13,7 @@
     margin-top: 5%;
 }
 
-#AdminFormContainer form{
+#AdminFormContainer .LoginForm{
     justify-content: center;
 }
 
@@ -36,4 +36,8 @@
     height: 5vh;
     border-radius: 5px;
     margin: auto 1.5%;
+}
+
+#AdminFormContainer #alert{
+    margin-top: 2.5%;
 }

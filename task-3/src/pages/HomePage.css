@@ -1,9 +1,9 @@
-#App {
+#HomePage {
   margin: 0;
   padding: 0;
 }
 
-#AppContent {
+#HomePageContent {
   height: 100vh;
   display: flex;
   align-items: center;
