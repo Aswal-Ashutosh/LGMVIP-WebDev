@@ -3,6 +3,7 @@ import "../admin_login_form/AdminLoginForm.css";
 import { firebaseAuth, signIn, signUp } from "../../services/firebase.js";
 import { LinearProgress } from "@material-ui/core";
 import { Box } from "@material-ui/core";
+import { loggedUser } from "../../services/loggedUser";
 
 class AdminLoginForm extends React.Component {
   constructor(props) {
@@ -27,7 +28,7 @@ class AdminLoginForm extends React.Component {
     this.setState({ passwordInput: event.target.value });
   }
 
-  clearAlert(){
+  clearAlert() {
     const alertBox = document.getElementById("alert");
     alertBox.innerHTML = "";
   }
@@ -57,7 +58,7 @@ class AdminLoginForm extends React.Component {
   async handleSingIn() {
     this.clearAlert();
     this.setState({ loading: true });
-    
+
     if (this.validateEmailAndPassword()) {
       await signIn(
         firebaseAuth,
@@ -67,6 +68,8 @@ class AdminLoginForm extends React.Component {
         .then((userCredential) => {
           this.setState({ loading: false });
           this.showAlert("Signed In.", false);
+          loggedUser.setUser(this.state.emailInput);
+          window.location.replace("/adminPanel");
         })
         .catch((error) => {
           this.setState({ loading: false });
@@ -84,6 +87,8 @@ class AdminLoginForm extends React.Component {
               this.showAlert("Something went wrong!");
           }
         });
+    } else {
+      this.setState({ loading: false });
     }
   }
 
@@ -117,6 +122,8 @@ class AdminLoginForm extends React.Component {
               this.showAlert("Something went wrong!");
           }
         });
+    } else {
+      this.setState({ loading: false });
     }
   }
 
