@@ -1,11 +1,16 @@
 import React from "react";
 import "../admin_login_form/AdminLoginForm.css";
-import { firebaseAuth, signIn, signUp } from "../../services/firebase.js";
+import {
+  firebaseAuth,
+  signIn,
+  signUp,
+  registerCollege,
+} from "../../services/firebase.js";
+import { loggedUser } from "../../services/loggedUser";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-import { loggedUser } from "../../services/loggedUser";
 
 class AdminLoginForm extends React.Component {
   constructor(props) {
@@ -36,6 +41,7 @@ class AdminLoginForm extends React.Component {
 
   handleToggleButtonChange(event) {
     this.setState({ toggleButtonId: event.target.value });
+    this.clearAlert();
   }
 
   handleCollegeInput(event) {
@@ -69,6 +75,12 @@ class AdminLoginForm extends React.Component {
     return false;
   }
 
+  validateCollege() {
+    if (this.state.collegeInput.length !== 0) return true;
+    this.showAlert("College name can't be empty!");
+    return false;
+  }
+
   async handleSingIn() {
     this.clearAlert();
     this.setState({ loading: true });
@@ -79,11 +91,11 @@ class AdminLoginForm extends React.Component {
         this.state.emailInput,
         this.state.passwordInput
       )
-        .then((userCredential) => {
+        .then((_) => {
           this.setState({ loading: false });
           this.showAlert("Signed In.", false);
           loggedUser.setUser(this.state.emailInput);
-          window.location.replace("/adminPanel");
+          window.location.href = "/adminPanel";
         })
         .catch((error) => {
           this.setState({ loading: false });
@@ -98,6 +110,7 @@ class AdminLoginForm extends React.Component {
               this.showAlert("User not found!");
               break;
             default:
+              alert(error.message);
               this.showAlert("Something went wrong!");
           }
         });
@@ -110,14 +123,20 @@ class AdminLoginForm extends React.Component {
     this.clearAlert();
     this.setState({ loading: true });
 
-    if (this.validateEmailAndPassword()) {
+    if (this.validateEmailAndPassword() && this.validateCollege()) {
       await signUp(
         firebaseAuth,
         this.state.emailInput,
         this.state.passwordInput
       )
-        .then((userCredential) => {
-          this.setState({ emailInput: "", passwordInput: "", loading: false });
+        .then(async (_) => {
+          await registerCollege(this.state.emailInput, this.state.collegeInput);
+          this.setState({
+            emailInput: "",
+            passwordInput: "",
+            collegeInput: "",
+            loading: false,
+          });
           this.showAlert("Account created successfully.", false);
         })
         .catch((error) => {
@@ -141,7 +160,7 @@ class AdminLoginForm extends React.Component {
     }
   }
 
-  rederButton(id) {
+  renderButton(id) {
     switch (id) {
       case "sign_in":
         return (
@@ -156,7 +175,7 @@ class AdminLoginForm extends React.Component {
           </button>
         );
       default:
-        return (<button className="formBtn">Get Result</button>);
+        return <button className="formBtn">Get Result</button>;
     }
   }
 
@@ -198,7 +217,7 @@ class AdminLoginForm extends React.Component {
             onChange={this.handlePasswordInput}
             placeholder="Password"
           />
-          {this.rederButton(this.state.toggleButtonId)}
+          {this.renderButton(this.state.toggleButtonId)}
         </div>
         {this.state.loading ? (
           <Box sx={{ marginTop: "2.5%" }}>
