@@ -1,11 +1,6 @@
 import React from "react";
 import "../admin_login_form/AdminLoginForm.css";
-import {
-  firebaseAuth,
-  signIn,
-  signUp,
-  registerCollege,
-} from "../../services/firebase.js";
+import { signIn, signUp, registerCollege } from "../../services/firebase.js";
 import { loggedUser } from "../../services/loggedUser";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -86,12 +81,8 @@ class AdminLoginForm extends React.Component {
     this.setState({ loading: true });
 
     if (this.validateEmailAndPassword()) {
-      await signIn(
-        firebaseAuth,
-        this.state.emailInput,
-        this.state.passwordInput
-      )
-        .then((_) => {
+      await signIn(this.state.emailInput, this.state.passwordInput)
+        .then(() => {
           this.setState({ loading: false });
           this.showAlert("Signed In.", false);
           loggedUser.setUser(this.state.emailInput);
@@ -124,12 +115,8 @@ class AdminLoginForm extends React.Component {
     this.setState({ loading: true });
 
     if (this.validateEmailAndPassword() && this.validateCollege()) {
-      await signUp(
-        firebaseAuth,
-        this.state.emailInput,
-        this.state.passwordInput
-      )
-        .then(async (_) => {
+      await signUp(this.state.emailInput, this.state.passwordInput)
+        .then(async () => {
           await registerCollege(this.state.emailInput, this.state.collegeInput);
           this.setState({
             emailInput: "",
