@@ -20,6 +20,7 @@ export const firebaseAuth = getAuth(firebaseApp);
 
 export const firestore = getFirestore(firebaseApp);
 
+
 //FIREBASE AUTHENTICATION RELATED FUNCTIONS
 export const signIn = async function (email, password) {
   await signInWithEmailAndPassword(firebaseAuth, email, password).catch((e) => {
@@ -36,25 +37,23 @@ export const signUp = async function (email, password) {
 };
 
 //FIRESTORE RELATED DATA AND FUNCTIONS
-
 const availableIdRef = doc(firestore, "available-id", "id-number");
 
-//Function to register new college
-const getCollegeID = async function () {
+async function generateCollegeID () {
   try {
     const docSnap = await getDoc(availableIdRef);
     const collegeID = docSnap.data().id;
     await updateDoc(availableIdRef, { id: collegeID + 1 });
     return collegeID;
   } catch (e) {
-    alert("Error: incrementAvailableId");
+    alert("Error: generateCollegeID");
   }
 };
 
 export const registerCollege = async function (adminEmail, college) {
   try {
     //Generate unique id for college
-    const collegeID = await getCollegeID();
+    const collegeID = await generateCollegeID();
 
     //Add admin's email to admin collection
     const adminRef = doc(firestore, "admin", adminEmail);
@@ -67,3 +66,23 @@ export const registerCollege = async function (adminEmail, college) {
     alert("Error: registerCollege");
   }
 };
+
+export const getCollegeID = async function (adminEmail){
+  try{
+    const docRef = doc(firestore, 'admin', adminEmail);
+    const docSnap = await getDoc(docRef);
+    return docSnap.data()['alloted-college-id']
+  }catch(e){
+    alert('Error: getCollegeID')
+  }
+}
+
+export const getCollegeName = async function (collegeId){
+  try{
+    const docRef = doc(firestore, 'college', collegeId.toString());
+    const docSnap = await getDoc(docRef);
+    return docSnap.data()['college-name'];
+  }catch(e){
+    alert('Error: getCollegeName');
+  }
+}

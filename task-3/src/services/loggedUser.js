@@ -1,29 +1,25 @@
-class LoggedUser{
-    #email;
-    #userExist;
-
+export default class LoggedUser{
+    static #email;
+    static #userExist;
     constructor(){
-        this.#email = null;
-        this.#userExist = false;
+        throw Error('Can\'t instantiate LoggedUser');
     }
 
-    setUser(email){
+    static setUser(email){
         this.#email = email;
         this.#userExist = true;
     }
 
-    resetUser(){
+    static resetUser(){
         this.#email = null;
         this.#userExist = true;
     }
 
-    get userExist(){
+    static get userExist(){
         return this.#userExist;
     }
 
-    get email(){
+    static get email(){
         return this.#email;
     }
 }
-
-export  const loggedUser = new LoggedUser();

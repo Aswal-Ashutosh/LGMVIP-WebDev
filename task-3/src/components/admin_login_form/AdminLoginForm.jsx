@@ -1,7 +1,7 @@
 import React from "react";
 import "../admin_login_form/AdminLoginForm.css";
 import { signIn, signUp, registerCollege } from "../../services/firebase.js";
-import { loggedUser } from "../../services/loggedUser";
+import LoggedUser from "../../services/loggedUser";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import ToggleButton from "@mui/material/ToggleButton";
@@ -85,8 +85,8 @@ class AdminLoginForm extends React.Component {
         .then(() => {
           this.setState({ loading: false });
           this.showAlert("Signed In.", false);
-          loggedUser.setUser(this.state.emailInput);
-          window.location.href = "/adminPanel";
+          LoggedUser.setUser(this.state.emailInput);
+          this.props.history.push("/adminPanel");
         })
         .catch((error) => {
           this.setState({ loading: false });
@@ -139,6 +139,7 @@ class AdminLoginForm extends React.Component {
               this.showAlert("Password must be 6 characters long!");
               break;
             default:
+              alert(error.message);
               this.showAlert("Something went wrong!");
           }
         });

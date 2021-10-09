@@ -1,9 +1,9 @@
 import '../navbar/Navbar.css';
 
-function Navbar(){
+function Navbar(props){
     return(
         <nav>
-            <h1>Result Management System (R.M.S)</h1>
+            <h1>{props.heading}</h1>
         </nav>
     );
 }
