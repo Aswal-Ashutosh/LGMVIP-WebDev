@@ -192,14 +192,12 @@ class AdminLoginForm extends React.Component {
             />
           ) : null}
           <input
-            id="emailInput"
             type="text"
             value={this.state.emailInput}
             onChange={this.handleEmailInput}
             placeholder="Enter your email"
           />
           <input
-            id="passwordInput"
             type="password"
             value={this.state.passwordInput}
             onChange={this.handlePasswordInput}

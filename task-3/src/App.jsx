@@ -11,7 +11,7 @@ function App() {
             <HomePage />
           </Route>
           <Route exact path="/adminPanel">
-            <AdminPanel />
+            <AdminPanel/>
           </Route>
         </Switch>
       </Router>

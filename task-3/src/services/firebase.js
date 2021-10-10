@@ -77,12 +77,31 @@ export const getCollegeID = async function (adminEmail){
   }
 }
 
-export const getCollegeName = async function (collegeId){
+export const getCollegeName = async function (collegeID){
   try{
-    const docRef = doc(firestore, 'college', collegeId.toString());
+    const docRef = doc(firestore, 'college', collegeID.toString());
     const docSnap = await getDoc(docRef);
     return docSnap.data()['college-name'];
   }catch(e){
     alert('Error: getCollegeName');
+  }
+}
+
+export const createClass = async function (collegeID, className, subjects){
+  try{
+    const docRef = doc(firestore, 'college', collegeID.toString(), 'classes', className);
+    await setDoc(docRef, {'class-name': className, subjects: subjects});
+  }catch(e){
+    alert('Error: createClass');
+  }
+}
+
+export const isClassNameUnique = async function(className, collegeID){
+  try{
+    const docRef = doc(firestore, 'college', collegeID.toString(), 'classes', className);
+    const docSnap = await getDoc(docRef);
+    return !docSnap.exists();
+  }catch(e){
+    alert('Error: isClassNameUnique ' + e.message);
   }
 }
