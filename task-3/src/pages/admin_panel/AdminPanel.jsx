@@ -12,6 +12,7 @@ import { collection, onSnapshot } from "@firebase/firestore";
 import ClassForm from "../../components/class_form/ClassForm";
 import { withRouter } from "react-router-dom";
 import Alert from "@mui/material/Alert";
+import ClassCard from "../../components/class_card/ClassCard";
 
 class AdminPanel extends React.Component {
   constructor(props) {
@@ -32,6 +33,7 @@ class AdminPanel extends React.Component {
   }
 
   async componentDidMount() {
+    LoggedUser.setUser('ashu.aswal.333@gmail.com');
     const collegeID = await getCollegeID(LoggedUser.email);
     const collegeName = await getCollegeName(collegeID);
     this.setState({ collegeName: collegeName, collegeID: collegeID });
@@ -62,21 +64,20 @@ class AdminPanel extends React.Component {
   render() {
     return (
       <div id="AdminPanel">
-        <Navbar heading={this.state.collegeName} />
-        <h1>College ID: {this.state.collegeID}</h1>
+        <Navbar heading={this.state.collegeName} subHeading={`College ID (${this.state.collegeID})`} />
 
         {this.state.popUp && (
           <PopUp closePopUp={this.togglePopUp}>
             <ClassForm collegeID={this.state.collegeID} closePopUp={this.togglePopUp} />
           </PopUp>
         )}
-        {this.state.classes.length === 0 && (
+        {this.state.classes.length === 0 ? (
           <Alert severity="info" sx={{ marginBottom: "1.0%" }}>
             No classes created yet!
           </Alert>
-        )}
-        {this.state.classes.map((data) => (
-          <p>{data}</p>
+        ) : <h3>AVAILABLE CLASSES</h3>}
+        {this.state.classes.map((className, index) => (
+          <ClassCard className={className} index={index}/>
         ))}
         <button onClick={this.togglePopUp}>Create Class</button>
       </div>
