@@ -87,7 +87,6 @@ class AdminPanel extends React.Component {
         {this.state.classes.map((className, index) => (
           <ClassCard
             className={className}
-            collegeName={this.state.collegeName}
             collegeID={this.state.collegeID}
             index={index}
           />

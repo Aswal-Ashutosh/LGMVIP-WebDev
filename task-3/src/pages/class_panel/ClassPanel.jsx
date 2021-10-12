@@ -6,7 +6,7 @@ import {
 } from "../../services/firebase";
 import LoggedUser from "../../services/loggedUser";
 import { collection, onSnapshot } from "@firebase/firestore";
-import { withRouter, useLocation } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import Alert from "@mui/material/Alert";
 import "../class_panel/ClassPanel.css";
 import StudentForm from "../../components/subject_form/StudentFrom";
@@ -96,6 +96,7 @@ class ClassPanel extends React.Component {
           <StudentCard
             studentName={student.studentName}
             rollNumber={student.studentRollNumber}
+            collegeID={this.collegeID}
           />
         ))}
         <button onClick={this.togglePopUp}>Add Student</button>

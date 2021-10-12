@@ -1,5 +1,6 @@
 import HomePage from "./pages/home_page/HomePage";
 import AdminPanel from "./pages/admin_panel/AdminPanel";
+import Result from "./pages/result_page/Result";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ClassPanel from "./pages/class_panel/ClassPanel";
 
@@ -16,6 +17,9 @@ function App() {
           </Route>
           <Route exact path="/class">
             <ClassPanel/>
+          </Route>
+          <Route exact path="/studentResult">
+            <Result></Result>
           </Route>
         </Switch>
       </Router>

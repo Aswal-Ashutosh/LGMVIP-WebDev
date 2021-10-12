@@ -166,6 +166,7 @@ export const addStudent = async function (
       "students",
       studentRollNumber
     );
+
     await setDoc(studentDocRef, { "enrolled-class": className });
 
     //Add student subject details to college/collegeID/classes/className
@@ -185,5 +186,44 @@ export const addStudent = async function (
     });
   } catch (e) {
     alert("Error: addStudent  " + e.message);
+  }
+};
+
+export const getResult = async function (collegeID, rollNumber) {
+  try {
+    const collegeName = await getCollegeName(collegeID);
+
+    const studentDocRef = doc(
+      firestore,
+      "college",
+      collegeID.toString(),
+      "students",
+      rollNumber.toString()
+    );
+
+    const className = (await getDoc(studentDocRef)).data()["enrolled-class"];
+
+    const resultDocRef = doc(
+      firestore,
+      "college",
+      collegeID.toString(),
+      "classes",
+      className,
+      "enrolled-students",
+      rollNumber.toString()
+    );
+
+    const resultSnap = await getDoc(resultDocRef);
+    const result = resultSnap.data();
+
+    return {
+      collegeName: collegeName,
+      className: className,
+      studentName: result["student-name"],
+      studentRollNumber: result["student-roll-no"],
+      studentMarks: result["student-marks"],
+    };
+  } catch (e) {
+    alert("Error: getResult");
   }
 };

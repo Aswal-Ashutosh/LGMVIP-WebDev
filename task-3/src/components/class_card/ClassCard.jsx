@@ -7,7 +7,7 @@ export default function ClassCard(props) {
   const history = useHistory();
 
   function OnView(){
-    history.push('/class', {className: props.className, collegeName: props.collegeName, collegeID: props.collegeID})
+    history.push('/class', {className: props.className, collegeID: props.collegeID})
   }
 
   return (

@@ -7,7 +7,7 @@ export default function StudentCard(props) {
   const history = useHistory();
 
   function OnView(){
-    // history.push('/class', {className: props.className, collegeName: props.collegeName, collegeID: props.collegeID})
+    history.push('/studentResult', {collegeID: props.collegeID, rollNumber: props.rollNumber})
   }
 
   return (
