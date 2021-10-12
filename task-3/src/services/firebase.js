@@ -227,3 +227,23 @@ export const getResult = async function (collegeID, rollNumber) {
     alert("Error: getResult");
   }
 };
+
+export const isValidCollegeID = async function(collegeID){
+  try{
+    const docRef = doc(firestore, 'college', collegeID.toString());
+    const docSnap = await getDoc(docRef);
+    return docSnap.exists();
+  }catch(e){
+    alert('Error: isValidCollegeID');
+  }
+}
+
+export const isValidRollNumber = async function(collegeID, rollNumber){
+  try{
+    const docRef = doc(firestore, 'college', collegeID.toString(), 'students', rollNumber.toString());
+    const docSnap = await getDoc(docRef);
+    return docSnap.exists();
+  }catch(e){
+    alert('Error: isValidRollNumber');
+  }
+}

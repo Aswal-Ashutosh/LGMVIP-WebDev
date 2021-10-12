@@ -1,11 +1,18 @@
 import React from "react";
 import "../admin_login_form/AdminLoginForm.css";
-import { signIn, signUp, registerCollege } from "../../services/firebase.js";
+import {
+  signIn,
+  signUp,
+  registerCollege,
+  isValidCollegeID,
+  isValidRollNumber,
+} from "../../services/firebase.js";
 import LoggedUser from "../../services/loggedUser";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import { Alert } from "@mui/material";
 
 class AdminLoginForm extends React.Component {
   constructor(props) {
@@ -14,15 +21,23 @@ class AdminLoginForm extends React.Component {
       emailInput: "",
       passwordInput: "",
       collegeInput: "",
+      collegeIDInput: "",
+      rollNumberInput: "",
       toggleButtonId: "sign_in",
+      alertMessage: "",
+      alert: false,
+      error: false,
       loading: false,
     };
 
     this.handleEmailInput = this.handleEmailInput.bind(this);
     this.handlePasswordInput = this.handlePasswordInput.bind(this);
     this.handleCollegeInput = this.handleCollegeInput.bind(this);
+    this.handleCollegeIDInput = this.handleCollegeIDInput.bind(this);
+    this.handleRollNumberInput = this.handleRollNumberInput.bind(this);
     this.handleSingIn = this.handleSingIn.bind(this);
     this.handleSingUp = this.handleSingUp.bind(this);
+    this.handleGetResult = this.handleGetResult.bind(this);
     this.handleToggleButtonChange = this.handleToggleButtonChange.bind(this);
   }
 
@@ -32,6 +47,14 @@ class AdminLoginForm extends React.Component {
 
   handlePasswordInput(event) {
     this.setState({ passwordInput: event.target.value });
+  }
+
+  handleCollegeIDInput(event) {
+    this.setState({ collegeIDInput: event.target.value });
+  }
+
+  handleRollNumberInput(event) {
+    this.setState({ rollNumberInput: event.target.value });
   }
 
   handleToggleButtonChange(event) {
@@ -44,15 +67,11 @@ class AdminLoginForm extends React.Component {
   }
 
   clearAlert() {
-    const alertBox = document.getElementById("alert");
-    alertBox.innerHTML = "";
+    this.setState({ alert: false });
   }
 
   showAlert(message, error = true) {
-    const alertBox = document.getElementById("alert");
-    alertBox.innerHTML = message;
-    if (error) alertBox.style.color = "red";
-    else alertBox.style.color = "green";
+    this.setState({ alert: true, error: error, alertMessage: message });
   }
 
   validateEmailAndPassword() {
@@ -66,7 +85,6 @@ class AdminLoginForm extends React.Component {
       this.showAlert("Email can't be empty!");
     else if (this.state.passwordInput.length === 0)
       this.showAlert("Password can't be empty!");
-
     return false;
   }
 
@@ -148,6 +166,43 @@ class AdminLoginForm extends React.Component {
     }
   }
 
+  async validateStudentDetails() {
+    if (this.state.collegeIDInput.length === 0) {
+      this.showAlert("College ID can't be empty!");
+      return false;
+    }
+
+    if (this.state.rollNumberInput.length === 0) {
+      this.showAlert("Roll Number can't be empty!");
+      return false;
+    }
+
+    if (!(await isValidCollegeID(this.state.collegeIDInput))) {
+      this.showAlert("Provided college ID doesn't exist!");
+      return false;
+    }
+
+    if (
+      !(await isValidRollNumber(
+        this.state.collegeIDInput,
+        this.state.rollNumberInput
+      ))
+    ) {
+      this.showAlert("Wrong Roll Number!");
+      return false;
+    }
+    return true;
+  }
+
+  async handleGetResult() {
+    this.setState({ loading: true });
+    if (await this.validateStudentDetails()) {
+      this.setState({loading: false, alert: false});
+      this.props.history.push("/studentResult", {collegeID: this.state.collegeIDInput, rollNumber: this.state.rollNumberInput});
+    }
+    this.setState({ loading: false });
+  }
+
   renderButton(id) {
     switch (id) {
       case "sign_in":
@@ -163,7 +218,11 @@ class AdminLoginForm extends React.Component {
           </button>
         );
       default:
-        return <button className="formBtn">Get Result</button>;
+        return (
+          <button className="formBtn" onClick={this.handleGetResult}>
+            Get Result
+          </button>
+        );
     }
   }
 
@@ -182,27 +241,47 @@ class AdminLoginForm extends React.Component {
           <ToggleButton value="students">Students</ToggleButton>
         </ToggleButtonGroup>
         <div className="LoginForm">
-          {this.state.toggleButtonId === "sign_up" ? (
-            <input
-              id="collegeInput"
-              type="text"
-              value={this.state.collegeInput}
-              onChange={this.handleCollegeInput}
-              placeholder="College Name"
-            />
-          ) : null}
-          <input
-            type="text"
-            value={this.state.emailInput}
-            onChange={this.handleEmailInput}
-            placeholder="Enter your email"
-          />
-          <input
-            type="password"
-            value={this.state.passwordInput}
-            onChange={this.handlePasswordInput}
-            placeholder="Password"
-          />
+          {this.state.toggleButtonId !== "students" ? (
+            <div>
+              {this.state.toggleButtonId === "sign_up" ? (
+                <input
+                  id="collegeInput"
+                  type="text"
+                  value={this.state.collegeInput}
+                  onChange={this.handleCollegeInput}
+                  placeholder="College Name"
+                />
+              ) : null}
+              <input
+                type="text"
+                value={this.state.emailInput}
+                onChange={this.handleEmailInput}
+                placeholder="Enter your email"
+              />
+              <input
+                type="password"
+                value={this.state.passwordInput}
+                onChange={this.handlePasswordInput}
+                placeholder="Password"
+              />
+            </div>
+          ) : (
+            <div>
+              <input
+                type="text"
+                value={this.state.collegeIDInput}
+                onChange={this.handleCollegeIDInput}
+                placeholder="College ID"
+              />
+              <input
+                type="text"
+                value={this.state.rollNumberInput}
+                onChange={this.handleRollNumberInput}
+                placeholder="Roll Number"
+              />
+            </div>
+          )}
+
           {this.renderButton(this.state.toggleButtonId)}
         </div>
         {this.state.loading ? (
@@ -210,7 +289,15 @@ class AdminLoginForm extends React.Component {
             <LinearProgress />
           </Box>
         ) : null}
-        <p id="alert"></p>
+
+        {this.state.alert && (
+          <Alert
+            severity={this.state.error ? "error" : "success"}
+            sx={{ margin: "1.5% 0" }}
+          >
+            {this.state.alertMessage}
+          </Alert>
+        )}
       </div>
     );
   }

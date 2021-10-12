@@ -69,7 +69,7 @@ export default function Result(props) {
           {totalObtainedMarks}/{totalMarks}
         </p>
         <p>
-          <b>C.G.P.A : </b>
+          <b>C.G.P.A: </b>
           {((totalObtainedMarks / totalMarks) * 10).toFixed(1)}
         </p>
       </div>
