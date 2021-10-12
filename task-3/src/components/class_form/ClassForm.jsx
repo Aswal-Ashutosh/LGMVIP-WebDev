@@ -52,7 +52,8 @@ class ClassForm extends React.Component {
   handleSubjectMarksInput(e) {
     const index = e.target.name;
     const subjects = this.state.subjects;
-    subjects[index].totalMarks = parseInt(e.target.value);
+    const marks = parseInt(e.target.value);
+    subjects[index].totalMarks = isNaN(marks) ? "" : marks;
     this.setState({ subjects: subjects });
   }
 
