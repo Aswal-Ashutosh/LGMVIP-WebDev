@@ -33,7 +33,7 @@ class AdminPanel extends React.Component {
   }
 
   async componentDidMount() {
-    LoggedUser.setUser('ashu.aswal.333@gmail.com');
+    LoggedUser.setUser("ashu.aswal.333@gmail.com");
     const collegeID = await getCollegeID(LoggedUser.email);
     const collegeName = await getCollegeName(collegeID);
     this.setState({ collegeName: collegeName, collegeID: collegeID });
@@ -64,20 +64,33 @@ class AdminPanel extends React.Component {
   render() {
     return (
       <div id="AdminPanel">
-        <Navbar heading={this.state.collegeName} subHeading={`College ID (${this.state.collegeID})`} />
+        <Navbar
+          heading={this.state.collegeName}
+          subHeading={`College ID (${this.state.collegeID})`}
+        />
 
         {this.state.popUp && (
           <PopUp closePopUp={this.togglePopUp}>
-            <ClassForm collegeID={this.state.collegeID} closePopUp={this.togglePopUp} />
+            <ClassForm
+              collegeID={this.state.collegeID}
+              closePopUp={this.togglePopUp}
+            />
           </PopUp>
         )}
         {this.state.classes.length === 0 ? (
           <Alert severity="info" sx={{ marginBottom: "1.0%" }}>
             No classes created yet!
           </Alert>
-        ) : <h3>AVAILABLE CLASSES</h3>}
+        ) : (
+          <h3>AVAILABLE CLASSES</h3>
+        )}
         {this.state.classes.map((className, index) => (
-          <ClassCard className={className} index={index}/>
+          <ClassCard
+            className={className}
+            collegeName={this.state.collegeName}
+            collegeID={this.state.collegeID}
+            index={index}
+          />
         ))}
         <button onClick={this.togglePopUp}>Create Class</button>
       </div>

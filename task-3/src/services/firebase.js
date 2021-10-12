@@ -20,7 +20,6 @@ export const firebaseAuth = getAuth(firebaseApp);
 
 export const firestore = getFirestore(firebaseApp);
 
-
 //FIREBASE AUTHENTICATION RELATED FUNCTIONS
 export const signIn = async function (email, password) {
   await signInWithEmailAndPassword(firebaseAuth, email, password).catch((e) => {
@@ -39,7 +38,7 @@ export const signUp = async function (email, password) {
 //FIRESTORE RELATED DATA AND FUNCTIONS
 const availableIdRef = doc(firestore, "available-id", "id-number");
 
-async function generateCollegeID () {
+async function generateCollegeID() {
   try {
     const docSnap = await getDoc(availableIdRef);
     const collegeID = docSnap.data().id;
@@ -48,7 +47,7 @@ async function generateCollegeID () {
   } catch (e) {
     alert("Error: generateCollegeID");
   }
-};
+}
 
 export const registerCollege = async function (adminEmail, college) {
   try {
@@ -67,41 +66,124 @@ export const registerCollege = async function (adminEmail, college) {
   }
 };
 
-export const getCollegeID = async function (adminEmail){
-  try{
-    const docRef = doc(firestore, 'admin', adminEmail);
+export const getCollegeID = async function (adminEmail) {
+  try {
+    const docRef = doc(firestore, "admin", adminEmail);
     const docSnap = await getDoc(docRef);
-    return docSnap.data()['alloted-college-id']
-  }catch(e){
-    alert('Error: getCollegeID')
+    return docSnap.data()["alloted-college-id"];
+  } catch (e) {
+    alert("Error: getCollegeID");
   }
-}
+};
 
-export const getCollegeName = async function (collegeID){
-  try{
-    const docRef = doc(firestore, 'college', collegeID.toString());
+export const getCollegeName = async function (collegeID) {
+  try {
+    const docRef = doc(firestore, "college", collegeID.toString());
     const docSnap = await getDoc(docRef);
-    return docSnap.data()['college-name'];
-  }catch(e){
-    alert('Error: getCollegeName');
+    return docSnap.data()["college-name"];
+  } catch (e) {
+    alert("Error: getCollegeName");
   }
-}
+};
 
-export const createClass = async function (collegeID, className, subjects){
-  try{
-    const docRef = doc(firestore, 'college', collegeID.toString(), 'classes', className);
-    await setDoc(docRef, {'class-name': className, subjects: subjects});
-  }catch(e){
-    alert('Error: createClass');
+export const createClass = async function (collegeID, className, subjects) {
+  try {
+    const docRef = doc(
+      firestore,
+      "college",
+      collegeID.toString(),
+      "classes",
+      className
+    );
+    await setDoc(docRef, { "class-name": className, subjects: subjects });
+  } catch (e) {
+    alert("Error: createClass");
   }
-}
+};
 
-export const isClassNameUnique = async function(className, collegeID){
-  try{
-    const docRef = doc(firestore, 'college', collegeID.toString(), 'classes', className);
+export const isClassNameUnique = async function (className, collegeID) {
+  try {
+    const docRef = doc(
+      firestore,
+      "college",
+      collegeID.toString(),
+      "classes",
+      className
+    );
     const docSnap = await getDoc(docRef);
     return !docSnap.exists();
-  }catch(e){
-    alert('Error: isClassNameUnique ' + e.message);
+  } catch (e) {
+    alert("Error: isClassNameUnique");
   }
-}
+};
+
+export const isUniqueRollNumber = async function (collegeID, rollNumber) {
+  try {
+    const docRef = doc(
+      firestore,
+      "college",
+      collegeID.toString(),
+      "students",
+      rollNumber
+    );
+    const docSnap = await getDoc(docRef);
+    return !docSnap.exists();
+  } catch (e) {
+    alert("Error: isUniqueRollNumber");
+  }
+};
+
+export const getSubjects = async function (className, collegeID) {
+  try {
+    const docRef = doc(
+      firestore,
+      "college",
+      collegeID.toString(),
+      "classes",
+      className
+    );
+    const docSnap = await getDoc(docRef);
+    const subjects = docSnap.data().subjects;
+    return subjects;
+  } catch (e) {
+    alert("Error: getSubjects");
+  }
+};
+
+export const addStudent = async function (
+  className,
+  collegeID,
+  studentName,
+  studentRollNumber,
+  subjectsWithMarks
+) {
+  try {
+    //Add student to college/collegeID/students
+    const studentDocRef = doc(
+      firestore,
+      "college",
+      collegeID.toString(),
+      "students",
+      studentRollNumber
+    );
+    await setDoc(studentDocRef, { "enrolled-class": className });
+
+    //Add student subject details to college/collegeID/classes/className
+    const studentDetailDocRef = doc(
+      firestore,
+      "college",
+      collegeID.toString(),
+      "classes",
+      className,
+      "enrolled-students",
+      studentRollNumber
+    );
+    await setDoc(studentDetailDocRef, {
+      "student-name": studentName,
+      "student-roll-no": parseInt(studentRollNumber),
+      "student-marks": subjectsWithMarks,
+    });
+  } catch (e) {
+    alert("Error: addStudent  " + e.message);
+  }
+};
