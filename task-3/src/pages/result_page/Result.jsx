@@ -44,6 +44,7 @@ export default function Result(props) {
         <h1>{result.collegeName}</h1>
         <h4>{`College ID(${collegeID})`}</h4>
         <hr />
+        <h4>{result.className}</h4>
         <div className="NameRollNo">
           <p>
             <b>Student Roll.No: </b>
