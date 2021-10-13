@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
+  signOut,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
@@ -35,11 +36,26 @@ export const signUp = async function (email, password) {
   );
 };
 
-//FIRESTORE RELATED DATA AND FUNCTIONS
-const availableIdRef = doc(firestore, "available-id", "id-number");
+export const signOutRms = async function () {
+  try {
+    await signOut(firebaseAuth);
+  } catch (e) {
+    alert("Error: signOutRms");
+  }
+};
 
+export const userExist = function () {
+  return firebaseAuth.currentUser !== null;
+};
+
+export const currentUserEmail = function () {
+  return firebaseAuth.currentUser.email;
+};
+
+//FIRESTORE RELATED DATA AND FUNCTIONS
 async function generateCollegeID() {
   try {
+    const availableIdRef = doc(firestore, "available-id", "id-number");
     const docSnap = await getDoc(availableIdRef);
     const collegeID = docSnap.data().id;
     await updateDoc(availableIdRef, { id: collegeID + 1 });
@@ -228,22 +244,28 @@ export const getResult = async function (collegeID, rollNumber) {
   }
 };
 
-export const isValidCollegeID = async function(collegeID){
-  try{
-    const docRef = doc(firestore, 'college', collegeID.toString());
+export const isValidCollegeID = async function (collegeID) {
+  try {
+    const docRef = doc(firestore, "college", collegeID.toString());
     const docSnap = await getDoc(docRef);
     return docSnap.exists();
-  }catch(e){
-    alert('Error: isValidCollegeID');
+  } catch (e) {
+    alert("Error: isValidCollegeID");
   }
-}
+};
 
-export const isValidRollNumber = async function(collegeID, rollNumber){
-  try{
-    const docRef = doc(firestore, 'college', collegeID.toString(), 'students', rollNumber.toString());
+export const isValidRollNumber = async function (collegeID, rollNumber) {
+  try {
+    const docRef = doc(
+      firestore,
+      "college",
+      collegeID.toString(),
+      "students",
+      rollNumber.toString()
+    );
     const docSnap = await getDoc(docRef);
     return docSnap.exists();
-  }catch(e){
-    alert('Error: isValidRollNumber');
+  } catch (e) {
+    alert("Error: isValidRollNumber");
   }
-}
+};

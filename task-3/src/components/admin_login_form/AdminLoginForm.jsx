@@ -7,7 +7,6 @@ import {
   isValidCollegeID,
   isValidRollNumber,
 } from "../../services/firebase.js";
-import LoggedUser from "../../services/loggedUser";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
 import ToggleButton from "@mui/material/ToggleButton";
@@ -103,7 +102,6 @@ class AdminLoginForm extends React.Component {
         .then(() => {
           this.setState({ loading: false });
           this.showAlert("Signed In.", false);
-          LoggedUser.setUser(this.state.emailInput);
           this.props.history.push("/adminPanel");
         })
         .catch((error) => {

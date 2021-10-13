@@ -1,13 +1,18 @@
 import React from "react";
 import { useHistory } from "react-router";
-import "../student_card/StudentCard.css"
+import { userExist } from "../../services/firebase";
+import "../student_card/StudentCard.css";
 
 export default function StudentCard(props) {
-
   const history = useHistory();
 
-  function OnView(){
-    history.push('/studentResult', {collegeID: props.collegeID, rollNumber: props.rollNumber})
+  function OnView() {
+    if (userExist())
+      history.push("/studentResult", {
+        collegeID: props.collegeID,
+        rollNumber: props.rollNumber,
+      });
+    else history.push("/");
   }
 
   return (

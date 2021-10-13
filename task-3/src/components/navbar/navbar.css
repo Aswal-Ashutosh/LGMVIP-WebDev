@@ -16,3 +16,16 @@ nav h1{
 nav h4{
     color:black;
 }
+
+nav div{
+}
+
+nav .Nav-btn{
+    float: right;
+    display: flex;
+    justify-content: flex-end;
+}
+
+nav .Nav-btn button{
+    background-color: rgb(221, 245, 247);
+}

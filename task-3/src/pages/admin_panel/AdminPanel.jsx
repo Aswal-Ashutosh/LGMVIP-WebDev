@@ -5,8 +5,10 @@ import {
   getCollegeName,
   getCollegeID,
   firestore,
+  signOutRms,
+  userExist,
+  currentUserEmail,
 } from "../../services/firebase";
-import LoggedUser from "../../services/loggedUser";
 import "../admin_panel/AdminPanel.css";
 import { collection, onSnapshot } from "@firebase/firestore";
 import ClassForm from "../../components/class_form/ClassForm";
@@ -25,16 +27,21 @@ class AdminPanel extends React.Component {
     };
     this.unsubscribe = null;
     this.togglePopUp = this.togglePopUp.bind(this);
+    this.signOut = this.signOut.bind(this);
   }
 
   togglePopUp() {
-    if (LoggedUser.userExist) this.setState({ popUp: !this.state.popUp });
+    if (userExist()) this.setState({ popUp: !this.state.popUp });
     else this.props.history.push("/");
   }
 
   async componentDidMount() {
-    LoggedUser.setUser("ashu.aswal.333@gmail.com");
-    const collegeID = await getCollegeID(LoggedUser.email);
+    if(userExist() === false){
+      alert('Sign In Required.')
+      this.props.history.push("/");
+      return;
+    }
+    const collegeID = await getCollegeID(currentUserEmail());
     const collegeName = await getCollegeName(collegeID);
     this.setState({ collegeName: collegeName, collegeID: collegeID });
 
@@ -58,7 +65,15 @@ class AdminPanel extends React.Component {
   }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    if(this.unsubscribe !== null)
+      this.unsubscribe();
+  }
+
+  async signOut() {
+    if (userExist()) {
+      await signOutRms();
+    }
+    this.props.history.push("/");
   }
 
   render() {
@@ -67,6 +82,7 @@ class AdminPanel extends React.Component {
         <Navbar
           heading={this.state.collegeName}
           subHeading={`College ID (${this.state.collegeID})`}
+          button={{ text: "Sign Out", onClick: this.signOut }}
         />
 
         {this.state.popUp && (
@@ -86,6 +102,7 @@ class AdminPanel extends React.Component {
         )}
         {this.state.classes.map((className, index) => (
           <ClassCard
+            key={index}
             className={className}
             collegeID={this.state.collegeID}
             index={index}

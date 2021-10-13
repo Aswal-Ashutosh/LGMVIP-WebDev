@@ -1,10 +1,7 @@
 import React from "react";
 import Navbar from "../../components/navbar/Navbar";
 import PopUp from "../../components/pop_up/PopUp";
-import {
-  firestore,
-} from "../../services/firebase";
-import LoggedUser from "../../services/loggedUser";
+import { firestore, userExist } from "../../services/firebase";
 import { collection, onSnapshot } from "@firebase/firestore";
 import { withRouter } from "react-router-dom";
 import Alert from "@mui/material/Alert";
@@ -26,13 +23,16 @@ class ClassPanel extends React.Component {
   }
 
   togglePopUp() {
-    if (LoggedUser.userExist) this.setState({ popUp: !this.state.popUp });
+    if (userExist()) this.setState({ popUp: !this.state.popUp });
     else this.props.history.push("/");
   }
 
   async componentDidMount() {
-    LoggedUser.setUser("ashu.aswal.333@gmail.com");
-
+    if (userExist() === false) {
+      alert("Sign In Required.");
+      this.props.history.push("/");
+      return;
+    }
     this.unsubscribe = await onSnapshot(
       collection(
         firestore,
@@ -64,7 +64,8 @@ class ClassPanel extends React.Component {
   }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    if(this.unsubscribe !== null)
+      this.unsubscribe();
   }
 
   render() {
@@ -92,8 +93,9 @@ class ClassPanel extends React.Component {
         ) : (
           <h3>Students Enrolled</h3>
         )}
-        {this.state.students.map((student) => (
+        {this.state.students.map((student, index) => (
           <StudentCard
+            key={index}
             studentName={student.studentName}
             rollNumber={student.studentRollNumber}
             collegeID={this.collegeID}
