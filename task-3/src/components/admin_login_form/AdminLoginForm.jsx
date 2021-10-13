@@ -100,7 +100,7 @@ class AdminLoginForm extends React.Component {
     if (this.validateEmailAndPassword()) {
       await signIn(this.state.emailInput, this.state.passwordInput)
         .then(() => {
-          this.setState({ loading: false });
+          this.setState({ loading: false, emailInput: "", passwordInput: "" });
           this.showAlert("Signed In.", false);
           this.props.history.push("/adminPanel");
         })
@@ -195,8 +195,11 @@ class AdminLoginForm extends React.Component {
   async handleGetResult() {
     this.setState({ loading: true });
     if (await this.validateStudentDetails()) {
-      this.setState({loading: false, alert: false});
-      this.props.history.push("/studentResult", {collegeID: this.state.collegeIDInput, rollNumber: this.state.rollNumberInput});
+      this.setState({ loading: false, alert: false });
+      this.props.history.push("/studentResult", {
+        collegeID: this.state.collegeIDInput,
+        rollNumber: this.state.rollNumberInput,
+      });
     }
     this.setState({ loading: false });
   }
