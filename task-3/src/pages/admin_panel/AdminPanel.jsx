@@ -94,7 +94,7 @@ class AdminPanel extends React.Component {
           </PopUp>
         )}
         {this.state.classes.length === 0 ? (
-          <Alert severity="info" sx={{ marginBottom: "1.0%" }}>
+          <Alert severity="info" sx={{ margin: "2.5% 1.0%" }}>
             No classes created yet!
           </Alert>
         ) : (
